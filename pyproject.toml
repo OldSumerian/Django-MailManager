@@ -8,8 +8,10 @@ packages = [{include = "django_project_send_mail"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-django = "^5.0.7"
+django = "4.2.2"
 psycopg2-binary = "^2.9.9"
+pillow = "^10.4.0"
+apscheduler = "^3.10.4"
 
 
 [build-system]
