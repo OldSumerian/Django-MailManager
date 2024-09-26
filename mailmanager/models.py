@@ -9,6 +9,14 @@ class Client(models.Model):
     email = models.EmailField()
     full_name = models.CharField(max_length=255)
     comment = models.TextField(**NULLABLE)
+    owner = models.ForeignKey(
+        User,
+        verbose_name="Пользователь",
+        help_text="Укажите пользователя сервиса (email)",
+        on_delete=models.CASCADE,
+        related_name="Clients",
+        **NULLABLE
+    )
 
     def __str__(self):
         return f'{self.full_name} ({self.email})'
@@ -23,6 +31,14 @@ class Client(models.Model):
 class Message(models.Model):
     subject = models.CharField('Тема письма', max_length=255)
     body = models.TextField('Тело письма')
+    owner = models.ForeignKey(
+        User,
+        verbose_name="Пользователь",
+        help_text="Укажите пользователя сервиса (email)",
+        on_delete=models.CASCADE,
+        related_name="Messages",
+        **NULLABLE
+    )
 
     def __str__(self):
         return f'Сообщение: {self.subject}'
@@ -33,19 +49,20 @@ class Message(models.Model):
         ordering = ['subject']
 
 
-class SendMail(models.Model):
+class Letter(models.Model):
     date_time_send = models.DateTimeField('Дата и время первой отправки')
     periodicity = models.CharField('Периодичность', max_length=255,
                                    choices=[('daily', 'раз в день'), ('weekly', 'раз в неделю'),
                                             ('monthly', 'раз в месяц')])
     STATUS_CHOICES = [('finished', 'завершена'), ('created', 'создана'), ('started', 'запущена')]
     status = models.CharField('Статус рассылки', max_length=255, choices=STATUS_CHOICES)
-    clients = models.ManyToManyField(Client, verbose_name='Клиенты')
-    manager_user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
+    clients = models.ManyToManyField(Client, verbose_name='Клиенты', related_name='letters')
+    owner = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE, **NULLABLE)
     message = models.ForeignKey(Message, verbose_name='Сообщение', on_delete=models.CASCADE)
 
+
     def __str__(self):
-        return f'Рассылка пользователя: {self.manager_user}, ID: {self.id}'
+        return f'Рассылка пользователя: {self.owner}, ID: {self.id}'
 
     class Meta:
         verbose_name = 'Рассылка'
@@ -58,9 +75,9 @@ class SendAttempt(models.Model):
     STATUS_CHOICES = [('success', 'успешно'), ('failed', 'не успешно')]
     status = models.CharField('Статус попытки', max_length=255, choices=STATUS_CHOICES)
     response_from_mail_server = models.TextField('Ответ почтового сервера', blank=True)
-    send_mail = models.ForeignKey(SendMail, verbose_name='Рассылка', on_delete=models.CASCADE)
+    send_mail = models.ForeignKey(Letter, verbose_name='Рассылка', on_delete=models.CASCADE)
     client = models.ForeignKey(Client, verbose_name='Клиент', on_delete=models.CASCADE)
-    manager_user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
     message = models.ForeignKey(Message, verbose_name='Сообщение', on_delete=models.CASCADE)
     attempts_count = models.PositiveIntegerField(verbose_name='Количество попыток')
     last_attempt_date_time = models.DateTimeField('Дата и время последней попытки')
