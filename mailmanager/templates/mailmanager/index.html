@@ -2,6 +2,52 @@
 
 {% block content %}
 
+<div class="container border border-2 mb-5">
+    <div class="row text-center">
+        <h3>Статистика сервиса</h3>
+        <div class="col-md-4">
+            <p>Общее количество рассылок: {{ count_letters }}</p>
+        </div>
+        <div class="col-md-4">
+            <p>Количество активных рассылок: {{ count_active_letters }}</p>
+        </div>
+        <div class="col-md-4">
+            <p>Количество уникальных клиентов: {{ count_unique_clients }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="container border border-2 mb-5">
+    <div class="row text-center">
+        <h3> Три случайные статьи блога </h3>
+    </div>
+    {% for blog in context.blogs %}
+    <div class="col-4">
+        <div class="card mb-4 box-shadow">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">{{ blog.title }}</h4>
+            </div>
+            <div class="card-body">
+                <p class="mt-3 mb-4 text-start m-3">{{ blog.content }}</p>
+            </div>
+            <div class="card-footer">
+                <p class="text-start mx-3">Просмотров: {{ blog.views_count }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!--{% for blog in blogs %}-->
+<!--<div class="card h-100">-->
+<!--    <div class="card-body">-->
+<!--        <h5 class="card-title">{{ blog.title }}</h5>-->
+<!--        <p class="card-text">{{ blog.content }}</p>-->
+<!--        <a href="{% url 'blog:blog_detail' blog.pk %}" class="btn btn-primary">Подробнее</a>-->
+<!--    </div>-->
+<!--</div>-->
+<!--{% endfor %}-->
+
 
 <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
     <div class="col">

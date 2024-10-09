@@ -1,16 +1,17 @@
-from sched import scheduler
 
 from django.core.management import BaseCommand
 from apscheduler.schedulers.background import BlockingScheduler
-from mailmanager.services import hello
+from mailmanager.services import is_started, daily, weekly, monthly
+
 
 class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         scheduler = BlockingScheduler()
-        scheduler.add_job(hello, 'interval', seconds=5, args=('Sergey',))
-        scheduler.add_job(hello, 'interval', seconds=10, args=('Ivan',))
-        # scheduler.add_job(hello, 'interval', month=1)
+        scheduler.add_job(is_started, 'interval', day=1)
+        scheduler.add_job(daily, 'interval', day=1)
+        scheduler.add_job(weekly, 'interval', week=1)
+        scheduler.add_job(monthly, 'interval', month=1)
         scheduler.start()
 
 

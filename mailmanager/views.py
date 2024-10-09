@@ -2,95 +2,99 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
+from blog.models import Blog
+from mailmanager.forms import LetterForm
 from mailmanager.models import Client, Message, Letter
+from mailmanager.views_services import CustomLoginRequiredMixin3, AutoOwnerMixin, ObjectsListAccessMixin, \
+    ObjectDetailAccessMixin, CustomLoginRequiredMixin, CustomLoginRequiredMixin2
 
 
-class ClientCreateView(CreateView):
+class ClientCreateView(CustomLoginRequiredMixin3, AutoOwnerMixin, CreateView):
     model = Client
     fields = ['email', 'full_name', 'comment']
     success_url = reverse_lazy('mailmanager:client_list')
 
 
-class ClientDetailView(DetailView):
+class ClientDetailView(ObjectDetailAccessMixin, DetailView):
     model = Client
 
 
-class ClientListView(ListView):
+class ClientListView(CustomLoginRequiredMixin3, ObjectsListAccessMixin, ListView):
     model = Client
     paginate_by = 10
 
 
-class ClientUpdateView(UpdateView):
+class ClientUpdateView(CustomLoginRequiredMixin, UpdateView):
     model = Client
     fields = ['email', 'full_name', 'comment']
     success_url = reverse_lazy('mailmanager:client_list')
 
 
-class ClientDeleteView(DeleteView):
+class ClientDeleteView(CustomLoginRequiredMixin2, DeleteView):
     model = Client
     success_url = reverse_lazy('mailmanager:client_list')
 
 
-class MessageCreateView(CreateView):
+class MessageCreateView(CustomLoginRequiredMixin3, AutoOwnerMixin, CreateView):
     model = Message
     fields = ['subject', 'body']
     success_url = reverse_lazy('mailmanager:message_list')
 
 
-class MessageDetailView(DetailView):
+class MessageDetailView(ObjectDetailAccessMixin, DetailView):
     model = Message
 
 
-class MessageListView(ListView):
+class MessageListView(CustomLoginRequiredMixin3, ObjectsListAccessMixin, ListView):
     model = Message
-    paginate_by = 10
+    paginate_by = 3
 
 
-class MessageUpdateView(UpdateView):
+class MessageUpdateView(CustomLoginRequiredMixin, UpdateView):
     model = Message
     fields = ['subject', 'body']
     success_url = reverse_lazy('mailmanager:message_list')
 
 
-class MessageDeleteView(DeleteView):
+class MessageDeleteView(CustomLoginRequiredMixin2, DeleteView):
     model = Message
     success_url = reverse_lazy('mailmanager:message_list')
 
 
-class LetterCreateView(CreateView):
+class LetterCreateView(CustomLoginRequiredMixin3, AutoOwnerMixin, CreateView):
     model = Letter
-    fields = ['periodicity','status','clients','manager_user','message']
+    form_class = LetterForm
     success_url = reverse_lazy('mailmanager:letter_list')
 
 
-class LetterDetailView(DetailView):
+class LetterDetailView(ObjectDetailAccessMixin, DetailView):
     model = Letter
 
 
-class LetterListView(ListView):
+class LetterListView(CustomLoginRequiredMixin3, ObjectsListAccessMixin, ListView):
     model = Letter
     paginate_by = 10
 
 
-class LetterUpdateView(UpdateView):
+class LetterUpdateView(CustomLoginRequiredMixin2, UpdateView):
     model = Letter
     fields = ['periodicity','status','clients','manager_user','message']
     success_url = reverse_lazy('mailmanager:letter_list')
 
 
-class LetterDeleteView(DeleteView):
+class LetterDeleteView(CustomLoginRequiredMixin2, DeleteView):
     model = Letter
     success_url = reverse_lazy('mailmanager:letter_list')
 
 
 def index(request):
-    return render(request,'mailmanager/index.html')
-
-
-
-
-
-
-
-
-
+    context = {'count_letters': Letter.objects.all().count(),
+               'count_active_letters': Letter.objects.filter(status='active').count(),
+               'count_unique_clients': Letter.objects.values('clients').distinct().count(),
+               # 'random_articles': Blog.objects.order_by('?').limit(3),  # limit(3) - выбирает 3 случайных статьи
+               # # {
+               # #     'random_articles': [
+               # #         {'title': article.title, 'url': reverse_lazy('blog:blog_detail', args=[article.id])}
+               # #         for article in random_articles}
+               }
+    return render(request,'mailmanager/index.html', context=context)

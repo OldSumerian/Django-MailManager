@@ -1,5 +1,15 @@
-{% extends 'mailmanager/includes/header.html'%}
+{% extends 'mailmanager/base.html'%}
+
 {% block content %}
+
+{% if user.is_authenticated %}
+<div class="row text-center">
+    <a type="button" class="btn btn-outline-primary"
+       href="{% url 'blog:blog_create'%}">
+        Добавить новую статью
+    </a>
+</div>
+{% endif %}
 <div class="row text-center">
     <div class="row text-center">
         {% if object_list|length == 0 %}
