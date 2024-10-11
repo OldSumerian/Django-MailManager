@@ -4,7 +4,7 @@ from django.views.generic import CreateView, DeleteView, DetailView, ListView, U
 
 from blog.models import Blog
 from mailmanager.forms import LetterForm
-from mailmanager.models import Client, Message, Letter
+from mailmanager.models import Client, Message, Letter, SendAttempt
 from mailmanager.views_services import CustomLoginRequiredMixin3, AutoOwnerMixin, ObjectsListAccessMixin, \
     ObjectDetailAccessMixin, CustomLoginRequiredMixin, CustomLoginRequiredMixin2
 
@@ -21,7 +21,7 @@ class ClientDetailView(ObjectDetailAccessMixin, DetailView):
 
 class ClientListView(CustomLoginRequiredMixin3, ObjectsListAccessMixin, ListView):
     model = Client
-    paginate_by = 10
+    paginate_by = 4
 
 
 class ClientUpdateView(CustomLoginRequiredMixin, UpdateView):
@@ -73,7 +73,7 @@ class LetterDetailView(ObjectDetailAccessMixin, DetailView):
 
 class LetterListView(CustomLoginRequiredMixin3, ObjectsListAccessMixin, ListView):
     model = Letter
-    paginate_by = 10
+    paginate_by = 3
 
 
 class LetterUpdateView(CustomLoginRequiredMixin2, UpdateView):
@@ -91,10 +91,10 @@ def index(request):
     context = {'count_letters': Letter.objects.all().count(),
                'count_active_letters': Letter.objects.filter(status='active').count(),
                'count_unique_clients': Letter.objects.values('clients').distinct().count(),
-               # 'random_articles': Blog.objects.order_by('?').limit(3),  # limit(3) - выбирает 3 случайных статьи
-               # # {
-               # #     'random_articles': [
-               # #         {'title': article.title, 'url': reverse_lazy('blog:blog_detail', args=[article.id])}
-               # #         for article in random_articles}
+               'random_articles': Blog.objects.order_by('?')[:3],
                }
     return render(request,'mailmanager/index.html', context=context)
+
+class SendAttemptListView(CustomLoginRequiredMixin3, ObjectsListAccessMixin, ListView):
+    model = SendAttempt
+    paginate_by = 10

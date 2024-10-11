@@ -19,16 +19,6 @@ class Blog(models.Model):
     def __str__(self):
         return f"Статья блога: {self.title}"
 
-    @classmethod
-    def get_3_random_blogs(cls):
-        blogs = cls.objects.order_by("?")[:3]
-        [blog.update_views() for blog in blogs]
-        return blogs
-
-    def update_views(self):
-        self.views_count += 1
-        self.save()
-
 
     class Meta:
         verbose_name = "Статья"

@@ -21,7 +21,9 @@
     <div class="row text-center">
         <h3> Три случайные статьи блога </h3>
     </div>
-    {% for blog in context.blogs %}
+    <div class="row">
+    {% for blog in random_articles %}
+
     <div class="col-4">
         <div class="card mb-4 box-shadow">
             <div class="card-header">
@@ -36,6 +38,8 @@
         </div>
     </div>
     {% endfor %}
+    </div>
+
 </div>
 
 <!--{% for blog in blogs %}-->

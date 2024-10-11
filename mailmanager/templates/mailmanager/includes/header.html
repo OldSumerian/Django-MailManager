@@ -16,6 +16,8 @@
             <a href="{% url 'mailmanager:client_list' %}" class="py-2 p-3 link-body-emphasis text-decoration-none">Клиенты</a>
             <a href="{% url 'mailmanager:message_list' %}" class="py-2 p-3 link-body-emphasis text-decoration-none">Сообщения</a>
             <a href="{% url 'mailmanager:letter_list' %}" class="py-2 p-3 link-body-emphasis text-decoration-none">Рассылки</a>
+            <a href="{% url 'mailmanager:sendattempt_list' %}" class="py-2 p-3 link-body-emphasis text-decoration-none">Статистика рассылок</a>
+
         {% else %}
             <a href="{% url 'users:login' %} " class="py-2 p-3 link-body-emphasis text-decoration-none">Авторизация</a>
             <a href="{% url 'users:registration' %}" class="py-2 p-3 link-body-emphasis text-decoration-none">Регистрация</a>

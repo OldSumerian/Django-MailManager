@@ -26,12 +26,28 @@
                     <p class="mt-3 mb-4 text-start m-3">{{ blog.content }}</p>
                     <div class="btn-group">
                         <a type="button" class="btn btn-outline-primary"
-                           href="#">Подробнее</a>
+                           href="{% url 'blog:blog_detail' blog.pk %}">Подробнее</a>
                     </div>
                 </div>
             </div>
         </div>
         {% endfor %}
+        {% endif %}
+
+        {% if page_obj.paginator.num_pages > 1 %}
+        <div id="pages" align="center">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+            {% endif %}
+
+            <span class="current">
+                Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+            {% endif %}
+        </div>
         {% endif %}
     </div>
 </div>

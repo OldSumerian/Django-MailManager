@@ -1,8 +1,11 @@
 from django.urls import path
+from django.views.decorators.cache import cache_page
+
 from mailmanager.apps import MailmanagerConfig
+from mailmanager.models import SendAttempt
 from mailmanager.views import index, ClientListView, MessageListView, LetterListView, ClientCreateView, \
     ClientDetailView, ClientUpdateView, ClientDeleteView, MessageCreateView, MessageUpdateView, MessageDetailView, \
-    MessageDeleteView, LetterCreateView, LetterUpdateView, LetterDetailView, LetterDeleteView
+    MessageDeleteView, LetterCreateView, LetterUpdateView, LetterDetailView, LetterDeleteView, SendAttemptListView
 
 app_name = MailmanagerConfig.name
 
@@ -27,10 +30,5 @@ urlpatterns = [
     path('letter_detail/<int:pk>/detail/', LetterDetailView.as_view(), name='letter_detail'),
     path('letter_delete/<int:pk>/delete/', LetterDeleteView.as_view(), name='letter_delete'),
 
-
-
-
-
-
-    # path('attempts_newsletter_list', cache_page(60)(AttemptsNewsletterListView.as_view()), name='attempts_newsletter_list'),
+    path('sendattempt_list/', cache_page(60)(SendAttemptListView.as_view()), name='sendattempt_list'),
 ]

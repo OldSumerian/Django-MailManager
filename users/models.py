@@ -48,3 +48,4 @@ class User(AbstractUser):
         verbose_name = 'Пользователь сервиса'
         verbose_name_plural = 'Пользователи сервиса'
         ordering = ['-date_joined', '-email']
+        # permission = ''
