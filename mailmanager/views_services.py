@@ -6,7 +6,17 @@ from mailmanager.models import Message
 
 
 def is_user_manager(user):
-    return user.has_perm('mailmanager.manager')
+    if user.request.user.has_perms(
+                [
+                    'content_manager',
+                    'users_list',
+                    'block_users',
+                    'disable_email',
+                    'edit_mail',
+                    'edit_list',
+                    'edit_message'
+                ]):
+        return user.has_perm('mailmanager.manager')
 
 
 def is_super_or_manager(current_user):
