@@ -42,10 +42,19 @@ class User(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
+
     def __str__(self):
         return f'Пользователь: {self.email}'
     class Meta:
         verbose_name = 'Пользователь сервиса'
         verbose_name_plural = 'Пользователи сервиса'
         ordering = ['-date_joined', '-email']
-        # permission = ''
+        permission = {
+            'content_manager': 'Может просматривать любые рассылки.',
+            'users_list': 'Может просматривать список пользователей сервиса.',
+            'block_users': 'Может блокировать пользователей сервиса.',
+            'disable_email': 'Может отключать рассылки.',
+            'edit_mail': 'Не может редактировать рассылки.',
+            'edit_list': 'Не может управлять списком рассылок.',
+            'edit_message': 'Не может изменять рассылки и сообщения.'
+                    }

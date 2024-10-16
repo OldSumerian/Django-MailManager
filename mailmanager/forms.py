@@ -7,7 +7,7 @@ class LetterForm(forms.ModelForm):
 
     class Meta:
         model = Letter
-        fields = ['date_time_send', 'periodicity', 'status', 'clients', 'message', 'owner']
+        fields = ['date_time_send', 'periodicity', 'status', 'clients', 'message']
         widgets = {
             'date_time_send': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
@@ -17,6 +17,5 @@ class LetterForm(forms.ModelForm):
             'status': 'Статус рассылки',
             'clients': 'Клиенты',
             'message': 'Сообщение',
-            'owner': 'Пользователь',
-        }
+                    }
 

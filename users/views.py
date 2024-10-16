@@ -65,7 +65,7 @@ class RegisterView(CreateView):
         host = self.request.get_host()
         url = f"http://{host}/users/confirm/{token}/"
         send_mail("Подтверждение почты", f"Для подтверждения вашей почты перейдите по ссылке ниже!\n{url}",
-                        [user.email])
+                        [user.email], recipient_list=[user.email])
         user.save()
         return super().form_valid(form)
 
