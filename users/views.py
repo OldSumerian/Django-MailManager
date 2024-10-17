@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView
 
-from config.settings import EMAIL_HOST_USER
+from config.settings import EMAIL_HOST_USER, SERVER_EMAIL
 from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm, ProfilePasswordRestoreForm
 from users.models import User
 
@@ -61,11 +61,11 @@ class RegisterView(CreateView):
         user = form.save()
         user.is_active = False
         token = secrets.token_hex(16)
-        user.token = token
+        user.verification_code = token
         host = self.request.get_host()
         url = f"http://{host}/users/confirm/{token}/"
         send_mail("Подтверждение почты", f"Для подтверждения вашей почты перейдите по ссылке ниже!\n{url}",
-                        [user.email], recipient_list=[user.email])
+                        SERVER_EMAIL, recipient_list=[user.email])
         user.save()
         return super().form_valid(form)
 
